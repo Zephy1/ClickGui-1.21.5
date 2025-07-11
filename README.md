@@ -97,7 +97,7 @@ var config: ClickGuiConfig? = null
 ```kt
 // This is important because if we were to do this in the companion object, the config couldn't load in time and everything would break.
 config = ClickGuiConfig()
-config!!.clickGui.init()
+config!!.clickGui.init() // .initialize() in 1.16+
 ```
 5. Finally, create a way to open your GUI, either by a keybind, a command, or voice control:
 ```kt
