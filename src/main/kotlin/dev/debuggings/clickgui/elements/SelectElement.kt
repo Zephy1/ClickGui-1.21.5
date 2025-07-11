@@ -62,8 +62,6 @@ class SelectElement @JvmOverloads constructor(
         rightIconText.hide()
 
         onMouseEnter {
-//            nameText?.hide()
-
             leftIconText.unhide()
             rightIconText.unhide()
 
@@ -74,8 +72,6 @@ class SelectElement @JvmOverloads constructor(
         }
 
         onMouseLeave {
-//            nameText?.unhide()
-
             leftIconText.hide()
             rightIconText.hide()
 
