@@ -14,7 +14,6 @@ open class Element<T>(
     var elementName: String, value: T,
     open var description: String? = null
 ) : UIBlock(Colors.OFF) {
-
     var value: T = value
         set(value) {
             listener(value)

@@ -18,7 +18,6 @@ class ColorPickerElement @JvmOverloads constructor(
     private val defaultValue: Color,
     override var description: String? = null,
 ) : Element<Color>(name, defaultValue, description) {
-
     override fun loadValue() {
         value = Utils.hexToColor(
             clickGui!!.config.get(savePath) ?: Utils.colorToHex(defaultValue)

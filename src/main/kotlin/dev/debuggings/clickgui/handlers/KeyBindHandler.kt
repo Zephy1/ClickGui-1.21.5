@@ -7,15 +7,21 @@ import dev.debuggings.clickgui.elements.ToggleElement
 import dev.debuggings.clickgui.elements.SubSection
 import gg.essential.universal.UKeyboard
 import gg.essential.universal.UMinecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.InputEvent
+
+//#if !FABRIC
+    //#if MC>=11602
+    //$$ import net.minecraftforge.client.event.InputEvent
+    //$$ import net.minecraftforge.eventbus.api.SubscribeEvent
+    //#else
+    //$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+    //$$ import net.minecraftforge.fml.common.gameevent.InputEvent
+    //#endif
+//#endif
 
 class KeyBindHandler(private val clickGui: ClickGui) {
-
     private val mc = UMinecraft.getMinecraft()
 
-    @SubscribeEvent
-    fun onKeyInput(event: InputEvent.KeyInputEvent) {
+    fun keyInputEvent() {
         if (mc.thePlayer == null) return
 
         clickGui.sections.forEach { section ->
@@ -24,6 +30,13 @@ class KeyBindHandler(private val clickGui: ClickGui) {
             }
         }
     }
+
+    //#if !FABRIC
+    // $$ @SubscribeEvent
+    //$$ fun onKeyInput(event: InputEvent.KeyInputEvent) {
+    //$$     keyInputEvent()
+    //$$ }
+    //#endif
 
     private fun handle(element: Element<*>) {
         if (element is SubSection && element.elements.size > 0) {

@@ -15,7 +15,6 @@ class TextInputElement @JvmOverloads constructor(
     private val defaultValue: String,
     override var description: String? = null,
 ) : Element<String>(name, defaultValue, description) {
-
     override fun loadValue() {
         value = clickGui!!.config.get<String>(savePath) ?: defaultValue
         textInput.setText(value)

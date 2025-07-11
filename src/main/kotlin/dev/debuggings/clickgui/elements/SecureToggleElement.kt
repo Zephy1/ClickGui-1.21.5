@@ -13,7 +13,6 @@ class SecureToggleElement @JvmOverloads constructor(
     private val defaultValue: Boolean = false,
     override var description: String? = null,
 ) : Element<Boolean>(name, defaultValue, description) {
-
     private var clicks: Int = 0
 
     override fun loadValue() {

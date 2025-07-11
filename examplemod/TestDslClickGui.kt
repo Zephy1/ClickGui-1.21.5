@@ -6,7 +6,6 @@ import gg.essential.universal.UChat
 import java.awt.Color
 
 object TestDslClickGui : ClickGui("./config/testclickgui_dsl.toml") {
-
     private lateinit var secureToggle: SecureToggleElement
 
     init {

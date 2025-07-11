@@ -15,8 +15,10 @@ import gg.essential.elementa.effects.ScissorEffect
 
 class Section(val name: String) : UIRoundedRectangle(4F) {
 
+    private var isClickCandidate = false
     private var isDragging: Boolean = false
     private var dragOffset: Pair<Float, Float> = 0f to 0f
+    private var lastPressedButton = -1
 
     val elements: ArrayList<Element<*>> = ArrayList()
 
@@ -128,26 +130,38 @@ class Section(val name: String) : UIRoundedRectangle(4F) {
         }
 
         titleBar.onMouseClick { event ->
-            if (event.mouseButton == 0) {
-                isDragging = true
+            lastPressedButton = event.mouseButton
 
+            if (event.mouseButton == 0) {
+                isClickCandidate = true
+                isDragging = false
                 dragOffset = event.absoluteX to event.absoluteY
-            }
-            else if (event.mouseButton == 1) {
+            } else if (event.mouseButton == 1) {
                 updatePositions()
                 updateHeight()
                 saveValue()
             }
         }.onMouseRelease {
+            if (lastPressedButton == 0 && isClickCandidate && !isDragging) {
+                updatePositions()
+                updateHeight()
+                saveValue()
+            }
+
+            isClickCandidate = false
             isDragging = false
         }.onMouseDrag { mouseX, mouseY, _ ->
-            if (!isDragging) return@onMouseDrag
+            if (!isClickCandidate) return@onMouseDrag
 
             val absoluteX = mouseX + getLeft()
             val absoluteY = mouseY + getTop()
 
             val deltaX = absoluteX - dragOffset.first
             val deltaY = absoluteY - dragOffset.second
+
+            if (deltaX != 0f || deltaY != 0f) {
+                isDragging = true
+            }
 
             dragOffset = absoluteX to absoluteY
 

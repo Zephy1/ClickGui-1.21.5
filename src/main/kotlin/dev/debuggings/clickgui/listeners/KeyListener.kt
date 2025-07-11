@@ -1,6 +1,7 @@
 package dev.debuggings.clickgui.listeners
 
 import dev.debuggings.clickgui.Colors
+import dev.debuggings.clickgui.PrintableKeys
 import dev.debuggings.clickgui.elements.Element
 import dev.debuggings.clickgui.elements.SubSection
 import gg.essential.elementa.components.UIText
@@ -9,7 +10,6 @@ import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.pixel
 import gg.essential.elementa.dsl.toConstraint
 import gg.essential.elementa.events.UIClickEvent
-import gg.essential.universal.UKeyboard
 
 open class KeyListener<T>(
     name: String,
@@ -17,10 +17,9 @@ open class KeyListener<T>(
     val allowBinding: Boolean,
     override var description: String? = null
 ) : Element<T>(name, defaultValue, description) {
-
     private var keyInputMode: Boolean = false
 
-    var boundKey: Int = UKeyboard.KEY_NONE
+    var boundKey: Int = PrintableKeys.NONE.code
     var keyPressed: Boolean = false
 
     val boundKeyText: UIText = UIText("NONE").constrain {
@@ -36,8 +35,8 @@ open class KeyListener<T>(
             boundKeyText.setText("Waiting...")
             return
         } else if (event.mouseButton == 1) {
-            boundKey = UKeyboard.KEY_NONE
-            boundKeyText.setText(UKeyboard.getKeyName(boundKey)!!)
+            boundKey = PrintableKeys.NONE.code
+            boundKeyText.setText(PrintableKeys.getKeyName(boundKey))
             saveKeybind()
         }
     }
@@ -59,13 +58,13 @@ open class KeyListener<T>(
     fun captureKeyPress() {
         clickGui?.window?.onKeyType { _, keyCode ->
             if (!keyInputMode) return@onKeyType
-            if (keyCode == UKeyboard.KEY_LSHIFT) return@onKeyType
-            if (keyCode != UKeyboard.KEY_ESCAPE) {
+            if (keyCode == PrintableKeys.LSHIFT.code) return@onKeyType
+            if (keyCode != PrintableKeys.ESCAPE.code) {
                 boundKey = keyCode
                 saveKeybind()
             }
             keyInputMode = false
-            boundKeyText.setText(UKeyboard.getKeyName(boundKey)!!)
+            boundKeyText.setText(PrintableKeys.getKeyName(boundKey))
         }
     }
 }

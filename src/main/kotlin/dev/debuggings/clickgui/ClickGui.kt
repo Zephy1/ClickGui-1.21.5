@@ -11,11 +11,19 @@ import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIWrappedText
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.dsl.*
-import net.minecraftforge.common.MinecraftForge
 import java.awt.Color
 
-open class ClickGui @JvmOverloads constructor(configPath: String, color: Color? = null) : WindowScreen(ElementaVersion.V1) {
+//#if FABRIC
+//$$ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+//#else
+//$$ import net.minecraftforge.common.MinecraftForge
+//#endif
+
+open class ClickGui @JvmOverloads constructor(configPath: String, color: Color? = null) : WindowScreen(ElementaVersion.V2) {
     private lateinit var colorHandler: ColorHandler
+    private lateinit var keyBindHandler: KeyBindHandler
+    private lateinit var descriptionHandler: DescriptionHandler
+
     var color = color
         set(value) {
             colorHandler.color = value
@@ -39,16 +47,35 @@ open class ClickGui @JvmOverloads constructor(configPath: String, color: Color? 
         textScale = 0.5.pixel
     } childOf descBlock
 
-    open fun init() {
+    // Backwards compatibility for 1.15 and below
+    //#if MC<11602
+    //$$ open fun init() {
+    //$$    initialize()
+    //$$ }
+    //#endif
+
+    // In 1.16+ `init` is marked final in UScreen
+    open fun initialize() {
         config.load()
         sections.forEach {
             it.init()
         }
 
         colorHandler = ColorHandler(this, color)
-        MinecraftForge.EVENT_BUS.register(colorHandler)
-        MinecraftForge.EVENT_BUS.register(KeyBindHandler(this))
-        MinecraftForge.EVENT_BUS.register(DescriptionHandler(this))
+        descriptionHandler = DescriptionHandler(this)
+        keyBindHandler = KeyBindHandler(this)
+
+        //#if FABRIC
+        //$$ ClientTickEvents.START_CLIENT_TICK.register {
+        //$$     colorHandler.tickEvent()
+        //$$     descriptionHandler.tickEvent()
+        //$$     keyBindHandler.keyInputEvent()
+        //$$ }
+        //#else
+        //$$ MinecraftForge.EVENT_BUS.register(colorHandler)
+        //$$ MinecraftForge.EVENT_BUS.register(keyBindHandler)
+        //$$ MinecraftForge.EVENT_BUS.register(descriptionHandler)
+        //#endif
 
         descText.setColor(Colors.TITLE_TEXT.toConstraint())
     }

@@ -1,6 +1,7 @@
 package dev.debuggings.clickgui.elements
 
 import dev.debuggings.clickgui.Colors
+import dev.debuggings.clickgui.PrintableKeys
 import dev.debuggings.clickgui.Section
 import dev.debuggings.clickgui.Utils.configName
 import dev.debuggings.clickgui.listeners.KeyListener
@@ -21,7 +22,6 @@ class SubSection @JvmOverloads constructor(
     private val toggleFunctionality: Boolean = true,
     override var description: String? = null,
 ) : KeyListener<Boolean>(name, defaultValue, allowBinding, description) {
-
     var subSection: SubSection? = null
 
     val elements = mutableListOf<Element<*>>()
@@ -31,8 +31,8 @@ class SubSection @JvmOverloads constructor(
             value = clickGui!!.config.get<Boolean>("$savePath._value_") ?: defaultValue
         }
         if (allowBinding) {
-            boundKey = clickGui!!.config.get<Int>("_keys_.$savePath._key_") ?: UKeyboard.KEY_NONE
-            boundKeyText.setText(UKeyboard.getKeyName(boundKey)!!)
+            boundKey = clickGui!!.config.get<Int>("_keys_.$savePath") ?: PrintableKeys.NONE.code
+            boundKeyText.setText(PrintableKeys.getKeyName(boundKey))
         }
     }
 
@@ -148,9 +148,7 @@ class SubSection @JvmOverloads constructor(
                     value = !value
                     saveValue()
                 }
-                else if (event.mouseButton == 1) {
-                    updateHeight(true)
-                }
+                updateHeight(true)
             }
         }
 

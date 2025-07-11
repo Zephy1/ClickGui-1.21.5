@@ -5,7 +5,9 @@ import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
+import gg.essential.elementa.dsl.minus
 import gg.essential.elementa.dsl.pixel
+import gg.essential.elementa.dsl.plus
 import gg.essential.elementa.dsl.toConstraint
 
 class SelectElement @JvmOverloads constructor(
@@ -14,7 +16,6 @@ class SelectElement @JvmOverloads constructor(
     private val options: ArrayList<String>,
     override var description: String? = null,
 ) : Element<String>(name, defaultValue, description) {
-
     private var selectedOption: Int = 0
 
     override fun loadValue() {
@@ -43,13 +44,13 @@ class SelectElement @JvmOverloads constructor(
     } childOf this
 
     private val leftIconText = UIText("◀").constrain {
-        x = 3.pixel()
+        x = 5.pixel()
         y = CenterConstraint()
         color = Colors.OPTION_TEXT.toConstraint()
     } childOf this
 
     private val rightIconText = UIText("▶").constrain {
-        x = 3.pixel(true)
+        x = 5.pixel(true)
         y = CenterConstraint()
         color = Colors.OPTION_TEXT.toConstraint()
     } childOf this
@@ -61,21 +62,27 @@ class SelectElement @JvmOverloads constructor(
         rightIconText.hide()
 
         onMouseEnter {
-            nameText?.hide()
+//            nameText?.hide()
 
             leftIconText.unhide()
             rightIconText.unhide()
 
+            nameText?.setX(CenterConstraint())
+            nameText?.setY(CenterConstraint() - 4.pixel())
             valueText.setX(CenterConstraint())
+            valueText.setY(CenterConstraint() + 4.pixel())
         }
 
         onMouseLeave {
-            nameText?.unhide()
+//            nameText?.unhide()
 
             leftIconText.hide()
             rightIconText.hide()
 
+            nameText?.setX(5.pixel())
+            nameText?.setY(CenterConstraint())
             valueText.setX(5.pixel(true))
+            valueText.setY(CenterConstraint())
         }
 
         leftIconText.onMouseClick {

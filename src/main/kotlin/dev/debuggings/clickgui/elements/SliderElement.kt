@@ -18,8 +18,8 @@ class SliderElement @JvmOverloads constructor(
     private val defaultValue: Int,
     override var description: String? = null,
 ) : Element<Int>(name, defaultValue, description) {
-
     private var isDragging: Boolean = false
+    private var isHovered: Boolean = false
 
     override fun loadValue() {
         value = clickGui!!.config.get<Int>(savePath) ?: defaultValue
@@ -89,6 +89,18 @@ class SliderElement @JvmOverloads constructor(
 
         onMouseRelease {
             isDragging = false
+
+            if (!isHovered) {
+                nameText?.unhide()
+                sliderBox.hide()
+                sliderBar.hide()
+                sliderMinText.hide()
+                sliderMaxText.hide()
+
+                valueText.setX(5.pixel(true))
+                valueText.setY(CenterConstraint())
+                valueText.setText("$value / $maxValue")
+            }
         }
 
         onMouseDrag { mouseX, _, _ ->
@@ -108,8 +120,9 @@ class SliderElement @JvmOverloads constructor(
         }
 
         onMouseEnter {
-            nameText?.hide()
+            isHovered = true
 
+            nameText?.hide()
             sliderBox.unhide()
             sliderBar.unhide()
             sliderMinText.unhide()
@@ -117,11 +130,14 @@ class SliderElement @JvmOverloads constructor(
 
             valueText.setX(CenterConstraint())
             valueText.setY(2.pixel())
+            valueText.setText("$value")
         }
 
         onMouseLeave {
-            nameText?.unhide()
+            isHovered = false
+            if (isDragging) return@onMouseLeave
 
+            nameText?.unhide()
             sliderBox.hide()
             sliderBar.hide()
             sliderMinText.hide()
@@ -129,6 +145,7 @@ class SliderElement @JvmOverloads constructor(
 
             valueText.setX(5.pixel(true))
             valueText.setY(CenterConstraint())
+            valueText.setText("$value / $maxValue")
         }
     }
 }

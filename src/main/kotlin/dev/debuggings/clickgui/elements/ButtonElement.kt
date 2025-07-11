@@ -1,6 +1,7 @@
 package dev.debuggings.clickgui.elements
 
 import dev.debuggings.clickgui.Colors
+import dev.debuggings.clickgui.PrintableKeys
 import dev.debuggings.clickgui.listeners.KeyListener
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
@@ -16,11 +17,10 @@ class ButtonElement @JvmOverloads constructor(
     override var description: String? = null,
     val function: () -> Unit
 ) : KeyListener<String>(name, "null", allowBinding) {
-
     override fun loadValue() {
         if (allowBinding) {
-            boundKey = clickGui!!.config.get<Int>("_keys_.$savePath") ?: UKeyboard.KEY_NONE
-            boundKeyText.setText(UKeyboard.getKeyName(boundKey)!!)
+            boundKey = clickGui!!.config.get<Int>("_keys_.$savePath") ?: PrintableKeys.NONE.code
+            boundKeyText.setText(PrintableKeys.getKeyName(boundKey))
         }
     }
 

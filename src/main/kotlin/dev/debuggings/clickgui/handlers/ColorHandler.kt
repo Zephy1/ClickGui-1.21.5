@@ -5,19 +5,24 @@ import dev.debuggings.clickgui.ClickGui
 import dev.debuggings.clickgui.Colors
 import gg.essential.elementa.dsl.toConstraint
 import gg.essential.universal.UMinecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
 import java.awt.Color
 
-class ColorHandler(private val clickGui: ClickGui, internal var color: Color? = null) {
+//#if !FABRIC
+    //#if MC>=11602
+    //$$ import net.minecraftforge.event.TickEvent
+    //$$ import net.minecraftforge.eventbus.api.SubscribeEvent
+    //#else
+    //$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+    //$$ import net.minecraftforge.fml.common.gameevent.TickEvent
+    //#endif
+//#endif
 
+class ColorHandler(private val clickGui: ClickGui, internal var color: Color? = null) {
     private val mc = UMinecraft.getMinecraft()
     private var colorRGB = 0F
 
-    @SubscribeEvent
-    fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase != TickEvent.Phase.START) return
-        if (mc.currentScreen != clickGui) return
+    fun tickEvent() {
+        if (mc.currentScreen == null) return
 
         colorRGB += 0.01F
 
@@ -27,6 +32,14 @@ class ColorHandler(private val clickGui: ClickGui, internal var color: Color? = 
             }
         }
     }
+
+    //#if !FABRIC
+    //$$ @SubscribeEvent
+    //$$ fun onTick(event: TickEvent.ClientTickEvent) {
+    //$$     if (event.phase != TickEvent.Phase.START) return
+    //$$     tickEvent()
+    //$$ }
+    //#endif
 
     private fun handle(index: Int, element: Element<*>) {
         if (element is DividerElement) return

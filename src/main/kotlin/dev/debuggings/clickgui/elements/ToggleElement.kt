@@ -1,6 +1,7 @@
 package dev.debuggings.clickgui.elements
 
 import dev.debuggings.clickgui.Colors
+import dev.debuggings.clickgui.PrintableKeys
 import dev.debuggings.clickgui.listeners.KeyListener
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
@@ -17,12 +18,11 @@ class ToggleElement @JvmOverloads constructor(
     allowBinding: Boolean = false,
     override var description: String? = null,
 ) : KeyListener<Boolean>(name, defaultValue, allowBinding, description) {
-
     override fun loadValue() {
         value = clickGui!!.config.get<Boolean>(savePath) ?: defaultValue
         if (allowBinding) {
-            boundKey = clickGui!!.config.get<Int>("_keys_.$savePath") ?: UKeyboard.KEY_NONE
-            boundKeyText.setText(UKeyboard.getKeyName(boundKey)!!)
+            boundKey = clickGui!!.config.get<Int>("_keys_.$savePath") ?: PrintableKeys.NONE.code
+            boundKeyText.setText(PrintableKeys.getKeyName(boundKey))
         }
     }
 

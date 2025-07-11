@@ -19,8 +19,8 @@ class DecimalSliderElement @JvmOverloads constructor(
     private val defaultValue: Float,
     override var description: String? = null,
 ) : Element<Float>(name, defaultValue, description) {
-
     private var isDragging: Boolean = false
+    private var isHovered: Boolean = false
 
     override fun loadValue() {
         value = clickGui!!.config.get<Double>(savePath)?.toFloat() ?: defaultValue
@@ -90,6 +90,18 @@ class DecimalSliderElement @JvmOverloads constructor(
 
         onMouseRelease {
             isDragging = false
+
+            if (!isHovered) {
+                nameText?.unhide()
+                sliderBox.hide()
+                sliderBar.hide()
+                sliderMinText.hide()
+                sliderMaxText.hide()
+
+                valueText.setX(5.pixel(true))
+                valueText.setY(CenterConstraint())
+                valueText.setText("$value / $maxValue")
+            }
         }
 
         onMouseDrag { mouseX, _, _ ->
@@ -109,8 +121,9 @@ class DecimalSliderElement @JvmOverloads constructor(
         }
 
         onMouseEnter {
-            nameText?.hide()
+            isHovered = true
 
+            nameText?.hide()
             sliderBox.unhide()
             sliderBar.unhide()
             sliderMinText.unhide()
@@ -118,11 +131,14 @@ class DecimalSliderElement @JvmOverloads constructor(
 
             valueText.setX(CenterConstraint())
             valueText.setY(2.pixel())
+            valueText.setText("$value")
         }
 
         onMouseLeave {
-            nameText?.unhide()
+            isHovered = false
+            if (isDragging) return@onMouseLeave
 
+            nameText?.unhide()
             sliderBox.hide()
             sliderBar.hide()
             sliderMinText.hide()
@@ -130,6 +146,7 @@ class DecimalSliderElement @JvmOverloads constructor(
 
             valueText.setX(5.pixel(true))
             valueText.setY(CenterConstraint())
+            valueText.setText("$value / $maxValue")
         }
     }
 }

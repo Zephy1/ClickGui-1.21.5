@@ -4,18 +4,23 @@ import dev.debuggings.clickgui.ClickGui
 import dev.debuggings.clickgui.elements.*
 import gg.essential.elementa.dsl.pixel
 import gg.essential.universal.UMinecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
+
+//#if !FABRIC
+    //#if MC>=11602
+    //$$ import net.minecraftforge.event.TickEvent
+    //$$ import net.minecraftforge.eventbus.api.SubscribeEvent
+    //#else
+    //$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+    //$$ import net.minecraftforge.fml.common.gameevent.TickEvent
+    //#endif
+//#endif
 
 class DescriptionHandler(private val clickGui: ClickGui) {
-
     private val mc = UMinecraft.getMinecraft()
     private var descriptionShown = false
 
-    @SubscribeEvent
-    fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase != TickEvent.Phase.START) return
-        if (mc.currentScreen != clickGui) return
+    fun tickEvent() {
+        if (mc.currentScreen == null) return
 
         descriptionShown = false
 
@@ -29,6 +34,14 @@ class DescriptionHandler(private val clickGui: ClickGui) {
             clickGui.descBlock.setX((-200).pixel)
         }
     }
+
+    //#if !FABRIC
+    //$$ @SubscribeEvent
+    //$$ fun onTick(event: TickEvent.ClientTickEvent) {
+    //$$     if (event.phase != TickEvent.Phase.START) return
+    //$$     tickEvent()
+    //$$ }
+    //#endif
 
     private fun handle(element: Element<*>) {
         if (element is DividerElement) return
